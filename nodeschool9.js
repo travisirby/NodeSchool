@@ -4,10 +4,10 @@ function getURL (url, callback) {
 
 //  var dataStr = ''; ** declare dataStr here if I want it to accumulate in the below URLS.foreach 
 //  var self = this;  ** use self.dataStr within URLEvent to call it 
- 
-  var urlEvent = http.get (url, function (response){
-    
-    dataStr = '';
+  
+  http.get (url, function (response){
+       
+    var dataStr = '';
 
     response.setEncoding('utf8');
 
@@ -19,10 +19,9 @@ function getURL (url, callback) {
       callback(null, dataStr);
     });
 
-  });
-
-  urlEvent.on('error', function(err) {
-    callback(err);
+    response.on('error', function(err) {
+      callback(err);
+    });
   });
 }
 
@@ -33,17 +32,17 @@ var URLS = [
 ];
 
 var callbackCounter = 3;
-  
-URLS.forEach(function (url) {
-  getURL(url[0], function (err, data){
+
+URLS.forEach(function (url,i,arr) {
+  getURL(arr[i][0], function (err, data){
     if (err){
       throw err;
     }
-    url[1] = data;
+    arr[i][1] = data;
     callbackCounter -= 1;
     if (callbackCounter === 0){
-      URLS.forEach( function(arry) {
-        console.log(arry[1].length);
+      arr.forEach( function(urls) {
+        console.log(urls[1]);
       });
     }
   });
